@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+.personalizado-input {
+    height: 30px;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 3px solid #080c0c;
+    border-radius: 10px;
+    opacity: 1;
+    margin-left: 3px;
+    margin-right: 5px;
+    padding: 6px;
+    input[type="text"] {
+        margin-top: -10px;
+    }
+    text-transform: uppercase;
+}

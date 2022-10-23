@@ -1,0 +1,151 @@
+<div fxLayout="row" fxLayoutWrap="wrap">
+    <div fxFlex.gt-sm="100" fxFlex.gt-xs="100" fxFlex="100">
+        <mat-card>
+            <mat-card-content>
+                <div fxLayout="row" fxLayoutWrap="wrap">
+                    <div fxFlex.gt-sm="30" fxFlex.gt-xs="30">
+                        <!-- ============================================================== -->
+                        <!-- search box -->
+                        <!-- ============================================================== -->
+                        <mat-card>
+                            <mat-card-content>
+                                <form [formGroup]="formLines">
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" fxFlex="100">
+                                            <p class="subtitle">Origen</p>
+                                            <input name="origen" formControlName="origen" class="personalizado-input" required maxlength="3" minlength="3" [matAutocomplete]="origenauto" [formControl]="origen" />
+                                            <mat-autocomplete #origenauto="matAutocomplete" autoActiveFirstOption>
+                                                <mat-option *ngFor="let option of filteredOptionsOrigen | async" [value]="option">
+                                                    {{option}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                            <div *ngIf="
+                                            formLines.controls['origen'].errors?.required &&
+                                            formLines.controls['origen'].touched
+                                          " class="text-danger">
+                                                El origen es requerido.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" fxFlex="100">
+                                            <p class="subtitle">Destino</p>
+                                            <input name="destino" formControlName="destino" class="personalizado-input" required maxlength="3" minlength="3" [matAutocomplete]="destinoauto" [formControl]="destino" />
+                                            <mat-autocomplete #destinoauto="matAutocomplete" autoActiveFirstOption>
+                                                <mat-option *ngFor="let option of filteredOptionsDestino | async" [value]="option">
+                                                    {{option}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                            <div *ngIf="
+                                            formLines.controls['destino'].errors?.required &&
+                                            formLines.controls['destino'].touched
+                                          " class="text-danger">
+                                                El destino es requerido.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" fxFlex="100">
+                                            <div *ngIf="formLines.hasError('Match')" class="text-danger">
+                                                El origen y destino no deben ser iguales.
+                                            </div>
+                                            <p class="subtitle">
+                                                <button mat-raised-button color="primary" [disabled]="!formLines.valid" (click)="buscarVuelos()">Buscar vuelos</button>
+                                                <button mat-raised-button color="warn" (click)="journey=[]">Limpiar</button>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" fxFlex="100">
+                                            <mat-form-field appearance="fill">
+                                                <mat-label>Selección de moneda</mat-label>
+                                                <mat-select name="moneda" formControlName="selMoneda" (selectionChange)="cambiarMoneda()">
+                                                    <mat-option *ngFor="let moneda of tipoMonedas" [value]="moneda">
+                                                        {{moneda?.symbol}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-card-content>
+                        </mat-card>
+                        <!-- ============================================================== -->
+                        <!-- end search box -->
+                        <!-- ============================================================== -->
+                    </div>
+                    <div fxFlex.gt-sm="70" fxFlex.gt-xs="70">
+                        <ng-container *ngIf="showJourney">
+                            <mat-card>
+                                <mat-card-content>
+                                    <div class="stats">
+                                        <div class="d-flex flex-row no-block">
+                                            <div class="p-10 p-l-0 b-r">
+                                                <div class="font-light">Origen</div>
+                                                <b>{{journey.origin}}</b>
+                                            </div>
+                                            <div class="p-10 b-r">
+                                                <div class="font-light">Destino</div>
+                                                <b>{{journey.destination}}</b>
+                                            </div>
+                                            <div class="p-10">
+                                                <div class="font-light">Precio total</div>
+                                                <b>{{journey.price | currencyChange}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                            <mat-card class="bg-info" style="color: white; float: left;" *ngFor="let item of journey.flight; let i = index ;">
+                                <mat-card-content>
+                                    <div class="taskboard-wrapper">
+                                        <div class="taskboard-header text-uppercase">
+                                            <strong>Escala #{{i+1}}</strong>
+                                        </div>
+                                        <hr>
+                                        <div class="taskboard-cards">
+                                            <div class="taskboard-task">
+                                                <div class="taskboard-task-title">
+                                                    <strong>Origen:</strong> {{item.origin}}
+                                                </div>
+                                                <hr>
+                                                <span class="task-decription"><strong>Destino:</strong> {{item.destination}}</span>
+                                                <hr>
+                                                <span class="task-decription"><strong>Precio:</strong> {{item.price | currencyChange}}</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </ng-container>
+                        <ng-container *ngIf="!showJourney">
+                            <mat-card class="bg-warning">
+                                <mat-card-content>
+                                    <div class="taskboard-wrapper">
+                                        <div class="taskboard-list inprogress">
+                                            <div class="taskboard-cards">
+                                                <div class="taskboard-task">
+                                                    <div class="taskboard-task-title">
+                                                        <strong>Realice una busqueda.</strong>
+                                                    </div>
+                                                    <hr>
+                                                    <span class="task-decription">{{error}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </mat-card-content>
+                            </mat-card>
+                        </ng-container>
+
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+</div>

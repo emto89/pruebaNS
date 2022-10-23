@@ -1,0 +1,16 @@
+.taskboard-header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.02rem;
+    padding: 8px 8px 0;
+}
+
+.taskboard-cards {
+    padding: 8px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
