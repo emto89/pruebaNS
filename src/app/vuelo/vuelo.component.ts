@@ -20,8 +20,10 @@ export class vueloComponent implements AfterViewInit {
 
   formItems: FormGroup;
   options: string[] = [];
+ /** options: any[] = [{ name: 'Mary' }, { name: 'Shelley' }, { name: 'Igor' }];
   filteredOptionsOrigen: Observable<string[]> = new Observable<string[]>();
-  filteredOptionsDestino: Observable<string[]> = new Observable<string[]>();
+  filteredOptionsDestino: Observable<string[]> = new Observable<string[]>(); */
+  
 
   journey = {} as Journey;
   flights: Flight[] = [];
@@ -57,25 +59,9 @@ export class vueloComponent implements AfterViewInit {
   ngOnInit() {
 
     this.cargarVuelos();  
-    this.obtenerTipoMonedas();
-    console.log("Opciones ",this.options);
+    this.obtenerTipoMonedas();  
+  }
 
-    this.filteredOptionsOrigen = this.origen.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
-    
-    this.filteredOptionsDestino = this.destino.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );    
-   
-  }
-  private _filter(value: string): string[] {
-    const filterValue = value.toUpperCase();
-    console.log(filterValue," val ",this.options);
-    return this.options.filter(option => option.toUpperCase().includes(filterValue));
-  }
   ngAfterViewInit() {}
  /***
   * 
@@ -116,12 +102,10 @@ export class vueloComponent implements AfterViewInit {
             this.options.push(element.destination);
         }
       });
-      console.log("RUtas", this.options);
-
    }
 
   /**
-   *  funcion que es ejecutada al momento 
+   *  funcion que es ejecutada al momento de buscar los vuelos
    */
   buscarVuelos(){
 
@@ -129,7 +113,6 @@ export class vueloComponent implements AfterViewInit {
 
     let origen:string = this.formLines.controls['origen'].value;
     let destino:string = this.formLines.controls['destino'].value;
-    //let journey = {} as Journey;
     let origenes: string[] = [];
     let rutaOrigenes: string [] = [];
   
@@ -139,13 +122,12 @@ export class vueloComponent implements AfterViewInit {
     let vuelosValidos = this.buscarRutaVuelos(this.flights,'origen',origenes,origen);
 
     rutaOrigenes = this.validacionVuelos(0,vuelosValidos,origen,destino,origenes);
-    console.log(rutaOrigenes);
     if(rutaOrigenes.includes(origen) && rutaOrigenes.includes(destino)){
 
       this.buscarJourney(this.journey,rutaOrigenes);
       this.journey.origin = origen;
       this.journey.destination = destino;
-      console.log("this.journey",this.journey);
+     
       this.showJourney = true;
 
     }else{
@@ -154,7 +136,15 @@ export class vueloComponent implements AfterViewInit {
     } 
      
   }
-
+/**
+ * 
+ * @param idx 
+ * @param vuelosValidos 
+ * @param origen 
+ * @param destino 
+ * @param origenes 
+ * @returns  la ruta a tomar para ir de origen a destino.
+ */
   validacionVuelos(idx: number = 0, vuelosValidos: Flight[], origen: string,destino: string,origenes: string[]){
         if(!origenes.includes(destino)){
            
@@ -177,16 +167,11 @@ export class vueloComponent implements AfterViewInit {
             if(!origenes.includes(origen)){
               origenes.push(origen); 
             }
-            /*console.log("vuelos",vuelosValidos.length);
-            console.log("==========idx==========",idx);
-            console.log("==========origenes==========",origenes);
-            console.log("====================",vuelosValidos);*/
-            
+                        
             let rutaTemporal = this.buscarRutaVuelos(this.flights,'origen',origenes,vuelosValidos[idx].destination); 
             let resp = this.validacionVuelos(idx,rutaTemporal,vuelosValidos[idx].destination,destino,origenes);       
             
             if( resp.length == 0  ){
-              //origenes.pop();
                 this.validacionVuelos(idx+1,vuelosValidos,vuelosValidos[idx+1].destination,destino,origenes);              
             }
           }
@@ -194,6 +179,15 @@ export class vueloComponent implements AfterViewInit {
     
     return origenes;
   }
+  /**
+   * funcion para buscar vuelos que cumplan con las condiciones de ir de un punto a otro.
+   * 
+   * @param flights 
+   * @param condicion 
+   * @param origenes 
+   * @param filtro 
+   * @returns  retorna los vuelos que cumplan las condiciones 
+   */
 
   buscarRutaVuelos(flights: Flight[],condicion: string, origenes: string[] = [], filtro: string = ''){
     if(condicion === 'origen'){
@@ -205,11 +199,6 @@ export class vueloComponent implements AfterViewInit {
     if(condicion === 'destino'){
       return flights.filter( (items:Flight) =>{
         return items.destination === filtro
-      });
-    }
-    if(condicion === 'validacion'){
-      return flights.filter( (items:Flight) =>{
-        return !origenes.includes(items.destination);
       });
     }
     return [];

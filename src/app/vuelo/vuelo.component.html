@@ -13,12 +13,8 @@
                                     <div fxLayout="row">
                                         <div fxLayout="column" fxFlex="100">
                                             <p class="subtitle">Origen</p>
-                                            <input name="origen" formControlName="origen" class="personalizado-input" required maxlength="3" minlength="3" [matAutocomplete]="origenauto" [formControl]="origen" />
-                                            <mat-autocomplete #origenauto="matAutocomplete" autoActiveFirstOption>
-                                                <mat-option *ngFor="let option of filteredOptionsOrigen | async" [value]="option">
-                                                    {{option}}
-                                                </mat-option>
-                                            </mat-autocomplete>
+                                            <input name="origen" formControlName="origen" class="personalizado-input" required maxlength="3" minlength="3" [formControl]="origen" />
+
                                             <div *ngIf="
                                             formLines.controls['origen'].errors?.required &&
                                             formLines.controls['origen'].touched
@@ -30,12 +26,7 @@
                                     <div fxLayout="row">
                                         <div fxLayout="column" fxFlex="100">
                                             <p class="subtitle">Destino</p>
-                                            <input name="destino" formControlName="destino" class="personalizado-input" required maxlength="3" minlength="3" [matAutocomplete]="destinoauto" [formControl]="destino" />
-                                            <mat-autocomplete #destinoauto="matAutocomplete" autoActiveFirstOption>
-                                                <mat-option *ngFor="let option of filteredOptionsDestino | async" [value]="option">
-                                                    {{option}}
-                                                </mat-option>
-                                            </mat-autocomplete>
+                                            <input name="destino" formControlName="destino" class="personalizado-input" required maxlength="3" minlength="3" [formControl]="destino" />
                                             <div *ngIf="
                                             formLines.controls['destino'].errors?.required &&
                                             formLines.controls['destino'].touched
